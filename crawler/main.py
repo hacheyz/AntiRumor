@@ -117,7 +117,7 @@ def processContennt(contents):
             truth = ''
             for j in range(i + 1, len(contents)):
                 content = contents[j]
-                if content.startswith('真相：'):
+                if content.startswith('真相：') or content.startswith('解析：') or content.startswith('详情：') or content.startswith('事实：'):
                     truth = content[3:]
                     break
             # 检查 truth 末尾是否有类似“（来源：XXX）”的内容
