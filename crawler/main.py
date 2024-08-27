@@ -6,6 +6,15 @@ import random
 from urllib.parse import urljoin
 import pandas as pd
 from selenium import webdriver
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+import time
 
 # 要爬取的主页面 URL
 base_url = "https://www.piyao.org.cn/jrpy/index.htm"
@@ -15,13 +24,39 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0'
 }
 
-def get_article_links(url):
+# 配置 Chrome 浏览器驱动
+service = Service(executable_path='D:\Code\Python\Anaconda\Scripts\chromedriver.exe')
+driver = webdriver.Chrome(service=service)
+
+def make_click():
+    """
+    模拟点击页面，返回点击后的页面内容
+    """
+    driver.get(base_url)
+    wait = WebDriverWait(driver, 10)
+    # timer = time.time()
+    while True:
+        # if time.time() - timer > 10:
+            # break
+        try:
+            # 查找并点击“查看更多”按钮
+            more_button = wait.until(EC.element_to_be_clickable((By.ID, 'more')))
+            more_button.click()
+            print("Clicked...")
+            time.sleep(2)
+
+        except TimeoutException:
+            print("No more button")
+            break
+    html_content = driver.page_source
+    return html_content
+
+def get_article_links(base_url, html_content):
     """
     模拟点击页面下方的“查看更多”，获取页面上的所有文章链接和发布时间
     """
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
+    soup = BeautifulSoup(html_content, 'html.parser')
+
     # 找到包含文章链接的列表元素
     articles = soup.select('ul#list > li')
     article_urls = []
@@ -30,7 +65,7 @@ def get_article_links(url):
         # 获取相对链接
         relative_link = article.find('a')['href']
         # 拼接成完整链接
-        full_link = urljoin(url, relative_link)
+        full_link = urljoin(base_url, relative_link)
         article_urls.append(full_link)
 
     return article_urls
@@ -94,14 +129,19 @@ def processContennt(contents):
             
 def main():
     # 获取主页面上所有文章链接
-    article_urls = get_article_links(base_url)
+    html_content = make_click()
+    article_urls = get_article_links(base_url, html_content)
+    print("Total article count: ", len(article_urls))
     
     # 数据表
     df = pd.DataFrame(columns=['rumor', 'truth', 'published_date', 'origin', 'url'])
+    cnt = 0
     
     for article_url in article_urls:
         article_info = get_article_content(article_url)
         results = processContennt(article_info['contents'])
+        cnt += 1
+        print("Processed article count: ", cnt, " URL: ", article_url)
         for result in results:
             df = df._append({
                 'rumor': result['rumor'],
