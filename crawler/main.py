@@ -124,6 +124,9 @@ def processContennt(contents):
             origin = "中国互联网联合辟谣平台"
             if re.search(r'（来源：.*?）$', truth):
                 origin = re.search(r'（来源：(.*?)）$', truth).group(1)
+                # 去除来源前面的 '@' 符号
+                if origin.startswith('@'):
+                    origin = origin[1:]
                 truth = re.sub(r'（来源：.*?）$', '', truth)
             rumor_truth_pairs.append({'rumor': rumor, 'truth': truth, 'origin': origin})
 
