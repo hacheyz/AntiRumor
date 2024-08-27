@@ -1,16 +1,11 @@
-import os
 import re
 import requests
 from bs4 import BeautifulSoup
-import random
 from urllib.parse import urljoin
 import pandas as pd
 from selenium import webdriver
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -28,6 +23,7 @@ headers = {
 service = Service(executable_path='D:\Code\Python\Anaconda\Scripts\chromedriver.exe')
 driver = webdriver.Chrome(service=service)
 
+
 def make_click():
     """
     模拟点击页面，返回点击后的页面内容
@@ -37,19 +33,24 @@ def make_click():
     # timer = time.time()
     while True:
         # if time.time() - timer > 10:
-            # break
+        # break
         try:
             # 查找并点击“查看更多”按钮
             more_button = wait.until(EC.element_to_be_clickable((By.ID, 'more')))
-            more_button.click()
-            print("Clicked...")
-            time.sleep(2)
-
+            # 查看按钮文字是否为“查看更多”，如果是则点击
+            if more_button.text == '查看更多':
+                more_button.click()
+                print("Clicked...")
+                time.sleep(1)
+            else:
+                print("No more button")
+                break
         except TimeoutException:
             print("No more button")
             break
     html_content = driver.page_source
     return html_content
+
 
 def get_article_links(base_url, html_content):
     """
@@ -100,6 +101,7 @@ def get_article_content(url):
         'url': url
     }
 
+
 def processContennt(contents):
     """
     处理文章内容，将文章内容拆分为谣言和真相
@@ -113,7 +115,7 @@ def processContennt(contents):
             if rumor[-1] in ['。', '？', '！', '：']:
                 rumor = rumor[:-1]
             truth = ''
-            for j in range(i+1, len(contents)):
+            for j in range(i + 1, len(contents)):
                 content = contents[j]
                 if content.startswith('真相：'):
                     truth = content[3:]
@@ -126,17 +128,18 @@ def processContennt(contents):
             rumor_truth_pairs.append({'rumor': rumor, 'truth': truth, 'origin': origin})
 
     return rumor_truth_pairs
-            
+
+
 def main():
     # 获取主页面上所有文章链接
     html_content = make_click()
     article_urls = get_article_links(base_url, html_content)
     print("Total article count: ", len(article_urls))
-    
+
     # 数据表
     df = pd.DataFrame(columns=['rumor', 'truth', 'published_date', 'origin', 'url'])
     cnt = 0
-    
+
     for article_url in article_urls:
         article_info = get_article_content(article_url)
         results = processContennt(article_info['contents'])
@@ -150,8 +153,9 @@ def main():
                 'origin': result['origin'],
                 'url': article_info['url']
             }, ignore_index=True)
-    
+
     df.to_csv('./data/rumor_truth.csv', index=False, encoding='utf-8')
+
 
 if __name__ == "__main__":
     main()
