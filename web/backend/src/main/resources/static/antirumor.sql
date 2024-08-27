@@ -15,7 +15,7 @@ create table rumor (
     rumor varchar(128) not null comment '谣言',
     truth text not null comment '真相',
     origin varchar(50) comment '辟谣发布平台',
-    published_date datetime not null comment '发布时间',
+    published_date date not null comment '发布时间',
     url varchar(128) comment '辟谣网站的链接'
 ) comment '谣言表';
 
