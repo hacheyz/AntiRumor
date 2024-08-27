@@ -24,6 +24,13 @@ service = Service(executable_path='D:\Code\Python\Anaconda\Scripts\chromedriver.
 driver = webdriver.Chrome(service=service)
 
 
+def date_format(date_str):
+    """
+    将日期字符串转换为 'yyyy-mm-dd' 格式
+    """
+    date_str = date_str.replace('年', '-').replace('月', '-').replace('日', '')
+    return date_str
+
 def make_click():
     """
     模拟点击页面，返回点击后的页面内容
@@ -152,7 +159,7 @@ def main():
             df = df._append({
                 'rumor': result['rumor'],
                 'truth': result['truth'],
-                'published_date': article_info['published_date'],
+                'published_date': date_format(article_info['published_date']),
                 'origin': result['origin'],
                 'url': article_info['url']
             }, ignore_index=True)
