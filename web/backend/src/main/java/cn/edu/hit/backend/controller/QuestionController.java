@@ -5,6 +5,7 @@ import cn.edu.hit.backend.pojo.Question;
 import cn.edu.hit.backend.pojo.Result;
 import cn.edu.hit.backend.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,4 +31,15 @@ public class QuestionController {
     return Result.success(questionService.pagelist(map));
   }
 
+  @GetMapping("/addAgree")
+  public Result addAgree(Integer id) {
+    questionService.addAgree(id);
+    return Result.success();
+  }
+
+  @GetMapping("/addDisagree")
+  public Result addDisagree(Integer id) {
+    questionService.addDisagree(id);
+    return Result.success();
+  }
 }

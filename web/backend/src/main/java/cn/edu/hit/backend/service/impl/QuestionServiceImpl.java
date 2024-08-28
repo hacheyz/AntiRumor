@@ -44,4 +44,14 @@ public class QuestionServiceImpl implements QuestionService {
     pb.setItems(p.getResult());
     return pb;
   }
+
+  @Override
+  public void addAgree(Integer id) {
+    questionMapper.addAgree(id);
+  }
+
+  @Override
+  public void addDisagree(Integer id) {
+    questionMapper.addDisagree(id);
+  }
 }

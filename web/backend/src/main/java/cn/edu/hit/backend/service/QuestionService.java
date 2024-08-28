@@ -10,4 +10,8 @@ public interface QuestionService {
   void add(String question);
 
   PageBean<Question> pagelist(Map<String, Object> map);
+
+  void addAgree(Integer id);
+
+  void addDisagree(Integer id);
 }

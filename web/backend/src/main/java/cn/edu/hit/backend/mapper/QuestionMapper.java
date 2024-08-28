@@ -4,6 +4,7 @@ import cn.edu.hit.backend.pojo.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,4 +17,10 @@ public interface QuestionMapper {
   public void add(String question, LocalDate create_date);
 
   List<Question> pagelist(@Param("searchQuestion") String searchQuestion);
+
+  @Update("update question set num_agree=num_agree+1 where id=#{id}")
+  void addAgree(Integer id);
+
+  @Update("update question set num_disagree=num_disagree+1 where id=#{id}")
+  void addDisagree(Integer id);
 }
