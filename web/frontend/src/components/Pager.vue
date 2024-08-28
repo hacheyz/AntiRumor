@@ -2,7 +2,7 @@
   <el-pagination :current-page="pageNum" :page-size="pageSize" :page-sizes="[3, 5, 10, 15]"
                  layout="jumper, total, sizes, prev, pager, next" background :total="total"
                  @size-change="onSizeChange"
-                 @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end"/>
+                 @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end; padding-right: 20px"/>
 </template>
 
 <script>
