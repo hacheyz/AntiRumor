@@ -39,12 +39,13 @@ create table rumor_tag (
 ) comment '谣言标签关联表';
 
 -- 删除表（存在则删除ask_rumor）
-drop table if exists ask_rumor;
--- 用户谣言信息表
-create table ask_rumor (
+drop table if exists question;
+-- 用户提问表
+create table question (
     id int unsigned auto_increment primary key comment '编号',
-    rumor varchar(128) not null comment '用户提供的谣言信息',
+    question varchar(128) not null comment '用户希望判断的信息',
+    create_date date not null comment '创建时间',
     num_agree int unsigned default 0 comment '支持的用户数量',
     num_disagree int unsigned default 0 comment '反对的用户数量',
     expert_conclusion text comment '专家意见'
-) comment '用户谣言信息表';
+) comment '用户提问表';
