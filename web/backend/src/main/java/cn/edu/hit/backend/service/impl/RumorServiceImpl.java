@@ -3,6 +3,7 @@ package cn.edu.hit.backend.service.impl;
 import cn.edu.hit.backend.mapper.RumorMapper;
 import cn.edu.hit.backend.pojo.PageBean;
 import cn.edu.hit.backend.pojo.Rumor;
+import cn.edu.hit.backend.pojo.Tag;
 import cn.edu.hit.backend.service.RumorService;
 
 import com.github.pagehelper.Page;
@@ -38,6 +39,11 @@ public class RumorServiceImpl implements RumorService {
     pb.setTotal(p.getTotal());
     pb.setItems(p.getResult());
     return pb;
+  }
+
+  @Override
+  public List<Tag> getTagsForRumor(Integer rumorId) {
+    return rumorMapper.getTagsForRumor(rumorId);
   }
 
 }
