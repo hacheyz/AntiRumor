@@ -1,29 +1,16 @@
 <script setup>
+import NavBarVue from '@/components/NavBar.vue'
+import FooterVue from '@/components/Footer.vue'
 </script>
 
 <template>
   <el-container class="layout-container">
-    <el-header class="header-container">
-      <el-menu
-        active-text-color="#ffd04b"
-        background-color="#014561"
-        text-color="#fff"
-        class="top-menu"
-        mode="horizontal"
-        router>
-        <el-menu-item index="/home"><span>科普园地</span></el-menu-item>
-        <el-menu-item index="/list"><span>辟谣信息聚合</span></el-menu-item>
-        <el-menu-item index="/judge"><span>辟谣法官</span></el-menu-item>
-      </el-menu>
-    </el-header>
-
+    <nav-bar-vue/>
     <el-container class="main-container">
       <el-main class="content">
-        <router-view></router-view>
+        <router-view/>
       </el-main>
-      <el-footer class="footer">
-        谣言治理系统 ©2024 Created by&nbsp;<a href="http://github.com/hacheyz/AntiRumor" target="_blank">HIT-AntiRumor team</a>
-      </el-footer>
+      <footer-vue/>
     </el-container>
   </el-container>
 </template>
@@ -31,7 +18,7 @@
 <style lang="scss" scoped>
 .layout-container {
   width: 100%;
-  height: 100vh;  /* 确保页面高度为视口高度 */
+  height: 100vh; /* 确保页面高度为视口高度 */
   display: flex;
   flex-direction: column;
 }
