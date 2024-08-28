@@ -8,12 +8,19 @@ import Pager from "@/components/Pager.vue";
 const tags = ['疫苗', '药物', '病毒', '传播途径', '预防措施']
 const searchQuery = ref('')
 const selectedTags = ref([])
-const cardsThisPage = ref([])
+const itemsThisPage = ref([])
 const total = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
 const dialogVisible = ref(false)
-const selectedItem = ref(null)
+const selectedItem = ref({
+  rumor: '',
+  truth: '',
+  tags: [],
+  origin: '',
+  published_date: '',
+  url: '',
+})
 
 const fetchCardsPageList = async () => {
   try {
@@ -22,14 +29,14 @@ const fetchCardsPageList = async () => {
       pageSize: pageSize.value,
     }
     if (searchQuery.value) {
-      params.rumor = searchQuery.value
+      params.searchRumor = searchQuery.value
     }
     if (selectedTags.value.length > 0) {
       params.tags = selectedTags.value.join(',')
     }
     const result = await rumorPageListService(params)
-    total.value = result.data.total
-    cardsThisPage.value = result.data.items
+    total.value = result.data.data.total
+    itemsThisPage.value = result.data.data.items
   } catch (error) {
     ElMessage.error('Error fetching rumor list')
   }
@@ -93,12 +100,15 @@ onMounted(fetchCardsPageList)
       <el-col :span="18">
         <el-card class="big-card">
           <el-scrollbar class="scroll-area" height="300px">
-            <div v-for="item in cardsThisPage" :key="item.id" class="small-card">
+            <div v-for="item in itemsThisPage" :key="item.id" class="small-card">
               <div class="card-content">
-                <h4>{{ item.title }}</h4>
+                <h4>{{ item.rumor }}</h4>
                 <el-button type="primary" @click="openDialog(item)">查看详情</el-button>
               </div>
             </div>
+            <template v-if="!itemsThisPage || itemsThisPage.length === 0">
+              <el-empty description="没有数据"/>
+            </template>
           </el-scrollbar>
           <Pager
               :pageNum="pageNum"
@@ -117,11 +127,12 @@ onMounted(fetchCardsPageList)
         title="详细信息"
         width="600px"
     >
-      <p><strong>标题：</strong>{{ selectedItem?.title }}</p>
-      <p><strong>正文：</strong>{{ selectedItem?.content }}</p>
-      <p><strong>标签：</strong>{{ selectedItem?.tags.join(', ') }}</p>
+      <p><strong>标题：</strong>{{ selectedItem?.rumor }}</p>
+      <p><strong>正文：</strong>{{ selectedItem?.truth }}</p>
+      <!--      <p><strong>标签：</strong>{{ selectedItem?.tags.join(', ') }}</p>--> <!-- TODO -->
       <p><strong>来源：</strong>{{ selectedItem?.origin }}</p>
-      <p><strong>发布日期：</strong>{{ selectedItem?.publishedDate }}</p>
+      <p><strong>发布日期：</strong>{{ selectedItem?.published_date }}</p>
+      <p><strong>链接：</strong>{{ selectedItem?.url }}</p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
@@ -174,7 +185,7 @@ onMounted(fetchCardsPageList)
 }
 
 .scroll-area {
-  max-height: 300px;
+  height: 100%;
   overflow-y: auto;
   margin-bottom: 20px;
 }
