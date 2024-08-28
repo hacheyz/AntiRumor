@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.hit.backend.mapper.RumorMapper">
+    <!--动态sql-->
+    <select id="pagelist" resultType="cn.edu.hit.backend.pojo.Rumor">
+        SELECT r.*
+        FROM rumor r
+        LEFT JOIN rumor_tag rt ON r.id = rt.rumor_id
+        LEFT JOIN tag t ON rt.tag_id = t.id
+        WHERE 1=1
+
+        <!-- 如果传入 searchRumor 参数 -->
+        <if test="searchRumor != null and searchRumor != ''">
+            AND r.rumor LIKE CONCAT('%', #{searchRumor}, '%')
+        </if>
+
+        <!-- 如果传入 tags 参数 -->
+        <if test="tags != null and tags.size() > 0">
+            AND t.name IN
+            <foreach collection="tags" item="tag" open="(" separator="," close=")">
+                #{tag}
+            </foreach>
+        </if>
+
+        GROUP BY r.id
+    </select>
+</mapper>

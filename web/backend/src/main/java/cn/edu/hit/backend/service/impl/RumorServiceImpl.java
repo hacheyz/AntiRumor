@@ -11,6 +11,8 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,17 +29,28 @@ public class RumorServiceImpl implements RumorService {
     Integer pageNum = (Integer) map.get("pageNum");
     Integer pageSize = (Integer) map.get("pageSize");
 
+    String searchRumor = (String) map.get("searchRumor");
+    // 此处的tags是由逗号连接的标签字符串
+    String tags = (String) map.get("tags");
+
+    List<String> tagList = null;
+    if(tags!=null && !tags.trim().isEmpty()) {
+      tagList = Arrays.asList(tags.split(","));
+    }
+
     //2.开启分页查询 PageHelper
     PageHelper.startPage(pageNum, pageSize);
 
     //3.调用mapper
-    List<Rumor> as = rumorMapper.list();
+    List<Rumor> as = rumorMapper.pagelist(searchRumor, tagList);
+
     //Page中提供了方法,可以获取PageHelper分页查询后 得到的总记录条数和当前页数据
     Page<Rumor> p = (Page<Rumor>) as;
 
     //把数据填充到PageBean对象中
     pb.setTotal(p.getTotal());
     pb.setItems(p.getResult());
+
     return pb;
   }
 

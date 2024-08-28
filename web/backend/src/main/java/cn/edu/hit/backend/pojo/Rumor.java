@@ -1,6 +1,7 @@
 package cn.edu.hit.backend.pojo;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -10,7 +11,8 @@ public class Rumor {
   private String rumor;
   private String truth;
   private String origin;
-  private LocalDate publishedDate;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private LocalDate published_date;
   private String url;
 
 }
