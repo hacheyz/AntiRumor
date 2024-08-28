@@ -1,11 +1,14 @@
 <script setup>
 import {ref, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
+import dayjs from 'dayjs'
 // 假设你有一个名为 rumorPageListService 的 API 服务
 import {rumorPageListService} from '@/api/list.js' // 请根据实际路径替换
 import Pager from "@/components/Pager.vue";
+import {Calendar, DataAnalysis} from "@element-plus/icons-vue";
 
-const tags = ['疫苗', '药物', '病毒', '传播途径', '预防措施']
+const tags = ['食品安全', '营养健康', '疾病防治', '美容健身', '生活解惑', '天文地理', '生物', '数理化', '交通运输', '航空航天',
+  '前沿科技', '能源环境', '农业技术', '建筑水利']
 const searchQuery = ref('')
 const selectedTags = ref([])
 const itemsThisPage = ref([])
@@ -36,7 +39,10 @@ const fetchCardsPageList = async () => {
     }
     const result = await rumorPageListService(params)
     total.value = result.data.data.total
-    itemsThisPage.value = result.data.data.items
+    itemsThisPage.value = result.data.data.items.map(item => ({
+      ...item,
+      date: dayjs(item.published_date).format('YYYY/MM/DD')
+    }))
   } catch (error) {
     ElMessage.error('Error fetching rumor list')
   }
@@ -65,6 +71,7 @@ const onCurrentChange = (num) => {
 onMounted(fetchCardsPageList)
 </script>
 
+
 <template>
   <el-container style="height: 100%; width: 100%;">
     <!-- 使用 el-row 和 el-col 排列卡片 -->
@@ -85,14 +92,29 @@ onMounted(fetchCardsPageList)
             <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
           </el-checkbox-group>
 
-          <!-- 搜索按钮 -->
-          <el-button
-              type="primary"
-              @click="handleSearch"
-              class="search-button"
-          >
-            搜索
-          </el-button>
+          <el-row gutter="30" style="margin: 20px; display: flex; justify-content: center">
+            <el-col span="1" style="display: flex; justify-content: center;">
+              <!-- 重置按钮 -->
+              <el-button
+                  type="danger"
+                  @click="selectedTags = []; searchQuery = ''; handleSearch()"
+                  class="search-button"
+              >
+                重置
+              </el-button>
+            </el-col>
+            <el-col span="12" style="display: flex; justify-content: center;">
+              <!-- 搜索按钮 -->
+              <el-button
+                  type="primary"
+                  @click="handleSearch"
+                  class="search-button"
+              >
+                搜索
+              </el-button>
+            </el-col>
+          </el-row>
+
         </el-card>
       </el-col>
 
@@ -100,11 +122,39 @@ onMounted(fetchCardsPageList)
       <el-col :span="18">
         <el-card class="big-card">
           <el-scrollbar class="scroll-area">
-            <div v-for="item in itemsThisPage" :key="item.id" class="small-card">
-              <div class="card-content">
-                <h4>{{ item.rumor }}</h4>
-                <el-button type="primary" @click="openDialog(item)">查看详情</el-button>
-              </div>
+            <div v-for="item in itemsThisPage" :key="item.id" class="small-card" @click="openDialog(item)">
+              <!-- 新增红色标签 -->
+              <el-row gutter="0" style="width: 100%;">
+                <el-col :span="3" class="card-date">
+                  <h3 class="centered">{{ item.date }}</h3>
+                </el-col>
+                <el-col :span="1">
+                  <el-divider direction="vertical" style="height: 120px"></el-divider>
+                </el-col>
+                <el-col :span="18" class="card-content">
+                  <el-row>
+                    <el-col :span="18">
+                      <h3>{{ item.rumor.concat("?") }}</h3>
+                    </el-col>
+                    <el-col :span="6" style="align-content: center; display: flex; justify-content: flex-end">
+                      <span class="rumor-label">谣言</span>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="12">
+                      <p>
+                        <el-icon>
+                          <CollectionTag/>
+                        </el-icon>
+                        <p> {{ item.tags }} </p>
+                      </p>
+                    </el-col>
+                    <el-col :span="12">
+                      <p class="origin-text">来源：{{ item.origin }}</p>
+                    </el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
             </div>
             <template v-if="!itemsThisPage || itemsThisPage.length === 0">
               <el-empty description="没有数据"/>
@@ -123,20 +173,62 @@ onMounted(fetchCardsPageList)
 
     <!-- 详情对话框 -->
     <el-dialog
-        :visible.sync="dialogVisible"
+        v-model="dialogVisible"
         title="详细信息"
-        width="600px"
+        width="1000px"
+        :close-on-click-modal="false"
     >
-      <p><strong>标题：</strong>{{ selectedItem?.rumor }}</p>
-      <p><strong>正文：</strong>{{ selectedItem?.truth }}</p>
-      <!--      <p><strong>标签：</strong>{{ selectedItem?.tags.join(', ') }}</p>--> <!-- TODO -->
-      <p><strong>来源：</strong>{{ selectedItem?.origin }}</p>
-      <p><strong>发布日期：</strong>{{ selectedItem?.published_date }}</p>
-      <p><strong>链接：</strong>{{ selectedItem?.url }}</p>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">关闭</el-button>
-      </span>
+      <el-row :gutter="20" class="dialog-content">
+        <el-col :span="24">
+          <h3>
+            <el-icon class="near-text-icon">
+              <document-copy/>
+            </el-icon>
+            <strong>谣言</strong>
+          </h3>
+          <p class="text-in-dialog">{{ selectedItem?.rumor }}</p>
+        </el-col>
+
+        <el-divider></el-divider>
+
+        <el-col :span="24">
+          <h3>
+            <el-icon class="near-text-icon">
+              <chat-line-round/>
+            </el-icon>
+
+            <strong>真相</strong>
+          </h3>
+          <p class="text-in-dialog">{{ selectedItem?.truth }}</p>
+        </el-col>
+
+        <el-divider></el-divider>
+
+        <el-row :gutter="20" style="width: 100%; margin-left: 10px; margin-right: 10px">
+          <p style="padding-right: 140px">
+            <el-icon class="near-text-icon">
+              <location/>
+            </el-icon>
+            <strong>来源：</strong>{{ selectedItem?.origin }}
+            <el-divider direction="vertical"></el-divider>
+            <el-icon class="near-text-icon">
+              <calendar/>
+            </el-icon>
+            <strong>发布日期：</strong>{{ selectedItem?.published_date }}
+          </p>
+        </el-row>
+
+        <el-row style="width: 100%; padding-left: 10px; padding-right: 10px">
+          <p>
+            <el-icon class="near-text-icon">
+              <Link/>
+            </el-icon>
+            <strong>辟谣链接：</strong><a :href="selectedItem?.url" target="_blank">{{ selectedItem?.url }}</a>
+          </p>
+        </el-row>
+      </el-row>
     </el-dialog>
+
   </el-container>
 </template>
 
@@ -163,8 +255,7 @@ onMounted(fetchCardsPageList)
 }
 
 .search-button {
-  margin-top: auto;
-  width: 100%;
+  width: 100px;
 }
 
 .card-list {
@@ -178,12 +269,18 @@ onMounted(fetchCardsPageList)
   width: 100%;
   height: 100%;
   padding: 20px;
-  margin-bottom: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  /* 如果未指定，可以删除以下属性 */
   flex-grow: 1;
+}
+
+.el-card__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0; /* 移除内边距以确保没有额外间距 */
+  overflow: hidden; /* 防止超出内容导致滚动 */
 }
 
 .scroll-area {
@@ -191,24 +288,92 @@ onMounted(fetchCardsPageList)
   overflow-y: auto;
   margin-bottom: 20px;
   height: 66vh;
+  padding-right: 20px;
 }
 
 .small-card {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ebeef5;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  transition: background-color 0.3s;
+  border-radius: 10px; /* 为卡片增加圆角 */
+}
+
+.small-card:hover {
+  background-color: #f5f5f5;
+}
+
+.rumor-label {
+  background-color: #f56c6c; /* 红色背景 */
+  color: #fff; /* 白色文字 */
+  padding: 4px 2px; /* 内边距 */
+  font-size: 12px; /* 字体大小 */
+  border-radius: 4px; /* 圆角 */
+  font-weight: bold; /* 加粗 */
+  margin: 10px;
+  text-align: center;
+  align-self: center;
+}
+
+.card-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-right: 10px; /* 增加右内边距 */
+  font-size: 14px;
 }
 
 .card-content {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  width: 100%;
+  padding-left: 10px; /* 增加左内边距 */
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.card-footer el-icon {
+  margin-right: 5px;
 }
 
 .dialog-footer {
   text-align: right;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75%;
+  width: 100%;
+}
+
+.origin-text {
+  color: #909399;
+  font-size: 14px;
+  text-align: right;
+}
+
+.dialog-content {
+  padding: 20px;
+}
+
+.near-text-icon {
+  margin-right: 8px;
+}
+
+.text-in-dialog {
+  font-size: 16px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 </style>
