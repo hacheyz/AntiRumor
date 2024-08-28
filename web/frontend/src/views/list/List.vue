@@ -99,7 +99,7 @@ onMounted(fetchCardsPageList)
       <!-- 右侧大卡片 -->
       <el-col :span="18">
         <el-card class="big-card">
-          <el-scrollbar class="scroll-area" height="300px">
+          <el-scrollbar class="scroll-area">
             <div v-for="item in itemsThisPage" :key="item.id" class="small-card">
               <div class="card-content">
                 <h4>{{ item.rumor }}</h4>
@@ -182,12 +182,15 @@ onMounted(fetchCardsPageList)
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  /* 如果未指定，可以删除以下属性 */
+  flex-grow: 1;
 }
 
 .scroll-area {
-  height: 100%;
+  flex-grow: 1; /* 使其在 flex 布局中扩展以填充剩余空间 */
   overflow-y: auto;
   margin-bottom: 20px;
+  height: 66vh;
 }
 
 .small-card {
