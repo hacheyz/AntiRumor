@@ -31,18 +31,21 @@ public class RumorServiceImpl implements RumorService {
 
     String searchRumor = (String) map.get("searchRumor");
     // 此处的tags是由逗号连接的标签字符串
-    String tags = (String) map.get("tags");
+    String searchTags = (String) map.get("tags");
 
-    List<String> tagList = null;
-    if(tags!=null && !tags.trim().isEmpty()) {
-      tagList = Arrays.asList(tags.split(","));
+    List<String> searchTagList = null;
+    if(searchTags!=null && !searchTags.trim().isEmpty()) {
+      searchTagList = Arrays.asList(searchTags.split(","));
     }
 
     //2.开启分页查询 PageHelper
     PageHelper.startPage(pageNum, pageSize);
 
+//    System.out.println(searchTags);
+//    System.out.println(searchTagList.size());
+
     //3.调用mapper
-    List<Rumor> rumors = rumorMapper.pagelist(searchRumor, tagList);
+    List<Rumor> rumors = rumorMapper.pagelist(searchRumor, searchTagList, searchTagList.size());
 
     for (Rumor rumor : rumors) {
       List<Tag> tagsForRumor = rumorMapper.getTagsForRumor(rumor.getId());

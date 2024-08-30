@@ -7,8 +7,8 @@
     <select id="pagelist" resultType="cn.edu.hit.backend.pojo.Rumor">
         SELECT r.*, GROUP_CONCAT(t.name SEPARATOR ',') as tags
         FROM rumor r
-        LEFT JOIN rumor_tag rt ON r.id = rt.rumor_id
-        LEFT JOIN tag t ON rt.tag_id = t.id
+        JOIN rumor_tag rt ON r.id = rt.rumor_id
+        JOIN tag t ON rt.tag_id = t.id
         WHERE 1=1
 
         <!-- 如果传入 searchRumor 参数 -->
@@ -16,14 +16,18 @@
             AND r.rumor LIKE CONCAT('%', #{searchRumor}, '%')
         </if>
 
-        <!-- 如果传入 tags 参数 -->
-        <if test="tags != null and tags.size() > 0">
+        <!-- 如果传入 searchTags 参数 -->
+        <if test="searchTags != null and searchTags.size() > 0">
             AND t.name IN
-            <foreach collection="tags" item="tag" open="(" separator="," close=")">
-                #{tag}
+            <foreach collection="searchTags" item="searchTag" open="(" separator="," close=")">
+                #{searchTag}
             </foreach>
         </if>
 
         GROUP BY r.id
+        <if test="searchTags != null and searchTags.size() > 0">
+            HAVING COUNT(DISTINCT t.name) = #{searchTagsLength}
+        </if>
+
     </select>
 </mapper>
