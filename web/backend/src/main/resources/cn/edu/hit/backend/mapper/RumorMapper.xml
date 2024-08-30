@@ -5,7 +5,7 @@
 <mapper namespace="cn.edu.hit.backend.mapper.RumorMapper">
     <!--动态sql-->
     <select id="pagelist" resultType="cn.edu.hit.backend.pojo.Rumor">
-        SELECT r.*
+        SELECT r.*, GROUP_CONCAT(t.name SEPARATOR ',') as tags
         FROM rumor r
         LEFT JOIN rumor_tag rt ON r.id = rt.rumor_id
         LEFT JOIN tag t ON rt.tag_id = t.id

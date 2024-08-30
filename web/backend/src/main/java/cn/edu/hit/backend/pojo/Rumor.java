@@ -14,5 +14,6 @@ public class Rumor {
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private LocalDate published_date;
   private String url;
+  private String[] tags;
 
 }

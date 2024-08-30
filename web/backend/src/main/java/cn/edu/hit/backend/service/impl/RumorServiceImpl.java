@@ -42,10 +42,20 @@ public class RumorServiceImpl implements RumorService {
     PageHelper.startPage(pageNum, pageSize);
 
     //3.调用mapper
-    List<Rumor> as = rumorMapper.pagelist(searchRumor, tagList);
+    List<Rumor> rumors = rumorMapper.pagelist(searchRumor, tagList);
+
+    for (Rumor rumor : rumors) {
+      List<Tag> tagsForRumor = rumorMapper.getTagsForRumor(rumor.getId());
+      String[] temp = new String[tagsForRumor.size()];
+      for(int i = 0; i<tagsForRumor.size(); ++i) {
+        temp[i] = tagsForRumor.get(i).getName();
+      }
+//      System.out.println(temp);
+      rumor.setTags(temp);
+    }
 
     //Page中提供了方法,可以获取PageHelper分页查询后 得到的总记录条数和当前页数据
-    Page<Rumor> p = (Page<Rumor>) as;
+    Page<Rumor> p = (Page<Rumor>) rumors;
 
     //把数据填充到PageBean对象中
     pb.setTotal(p.getTotal());
