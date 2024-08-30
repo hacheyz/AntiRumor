@@ -65,6 +65,7 @@ export default {
 h1 {
   text-align: center;
   color: #333;
+  font-size: 36px;
 }
 
 .section {

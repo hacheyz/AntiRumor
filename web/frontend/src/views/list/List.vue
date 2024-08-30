@@ -182,7 +182,7 @@ onMounted(fetchCardsPageList)
         <el-col :span="24">
           <h3>
             <el-icon class="near-text-icon">
-              <document-copy/>
+              <chat-line-round/>
             </el-icon>
             <strong>谣言</strong>
           </h3>
@@ -194,7 +194,7 @@ onMounted(fetchCardsPageList)
         <el-col :span="24">
           <h3>
             <el-icon class="near-text-icon">
-              <chat-line-round/>
+              <document-copy/>
             </el-icon>
 
             <strong>真相</strong>
