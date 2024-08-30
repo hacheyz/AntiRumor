@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,7 +30,12 @@ public class TagController {
   }
 
   @PostMapping("/pagelist")
-  public Result<PageBean<Tag>> list(@RequestBody Map<String, Object> map) {
+  public Result<PageBean<Tag>> pagelist(@RequestBody Map<String, Object> map) {
     return Result.success(tagService.pagelist(map));
+  }
+
+  @PostMapping("list")
+  public Result<List<Tag>> list() {
+    return Result.success(tagService.list());
   }
 }

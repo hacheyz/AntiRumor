@@ -28,6 +28,7 @@ public class TagServiceImpl implements TagService {
     tagMapper.add(name);
   }
 
+  // 分页查询
   @Override
   public PageBean<Tag> pagelist(Map<String, Object> map) {
     // 1. 创建PageBean对象
@@ -48,5 +49,11 @@ public class TagServiceImpl implements TagService {
     pb.setItems(p.getResult());
 
     return pb;
+  }
+
+  // 返回所有列表
+  @Override
+  public List<Tag> list() {
+    return tagMapper.list();
   }
 }
