@@ -3,12 +3,13 @@ import {ref, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
 import dayjs from 'dayjs'
 // 假设你有一个名为 rumorPageListService 的 API 服务
-import {rumorPageListService} from '@/api/list.js' // 请根据实际路径替换
+import {rumorPageListService} from '@/api/rumor.js' // 请根据实际路径替换
+import {tagListService} from "@/api/tag.js";
 import Pager from "@/components/Pager.vue";
 import {Calendar, DataAnalysis} from "@element-plus/icons-vue";
 
-const tags = ['食品安全', '营养健康', '疾病防治', '美容健身', '生活解惑', '天文地理', '生物', '数理化', '交通运输', '航空航天',
-  '前沿科技', '能源环境', '农业技术', '建筑水利']
+const categories = ref(['突发事件', '食药卫生', '公共政策', '时事政治', '社会热点', '科学常识', '党史国史', '公共安全'])
+const tags = ref([''])
 const searchQuery = ref('')
 const selectedTags = ref([])
 const itemsThisPage = ref([])
@@ -48,6 +49,22 @@ const fetchCardsPageList = async () => {
   }
 }
 
+const tagsFilter = (tags) => {
+  // 返回所有不在在 categories 中，或不为'其他'的标签列表
+  return tags.filter(tag => !categories.value.includes(tag.name) && tag.name !== '其他')
+}
+
+const fetchTagList = async () => {
+  try {
+    const result = await tagListService()
+    tags.value = (tagsFilter(result.data.data)).map(tag => tag.name)
+    // 合并 categories 到 tags 中
+    tags.value = [...categories.value, ...tags.value]
+  } catch (error) {
+    ElMessage.error('Error fetching tag list')
+  }
+}
+
 const handleSearch = () => {
   pageNum.value = 1 // 搜索时重置到第一页
   fetchCardsPageList()
@@ -68,7 +85,13 @@ const onCurrentChange = (num) => {
   fetchCardsPageList()
 }
 
-onMounted(fetchCardsPageList)
+// fetch cards and tags when component mounted
+onMounted(
+  () => {
+    fetchCardsPageList()
+    fetchTagList()
+  }
+)
 </script>
 
 
@@ -88,9 +111,11 @@ onMounted(fetchCardsPageList)
           />
 
           <!-- 标签筛选 -->
-          <el-checkbox-group v-model="selectedTags" class="tag-filter">
-            <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
-          </el-checkbox-group>
+          <el-scrollbar style="max-height: 68vh;">
+            <el-checkbox-group v-model="selectedTags" class="tag-filter">
+              <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
+            </el-checkbox-group>
+          </el-scrollbar>
 
           <el-row gutter="30" style="margin: 20px; display: flex; justify-content: center">
             <el-col span="1" style="display: flex; justify-content: center;">
