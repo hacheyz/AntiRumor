@@ -55,7 +55,7 @@ const fetchCardsPageList = async () => {
 
 const tagsFilter = (tags) => {
   // 返回所有不在在 categories 中，或不为'其他'的标签列表
-  return tags.filter(tag => !categories.value.includes(tag.name) && tag.name !== '其他')
+  return tags.filter(tag => !categories.value.includes(tag.name) && tag.name !== '其他' && tag.name !== '其它')
 }
 
 const fetchTagList = async () => {
