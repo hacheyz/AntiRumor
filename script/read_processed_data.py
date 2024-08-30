@@ -22,6 +22,21 @@ def create_connection():
         print(f"The error '{e}' occurred")
     return connection
 
+# 执行SQL脚本文件
+def execute_sql_script(connection, script_path):
+    cursor = connection.cursor()
+    with open(script_path, 'r', encoding='utf-8') as file:
+        sql_script = file.read()
+    # 逐行执行脚本内容
+    for statement in sql_script.split(';'):
+        if statement.strip():
+            try:
+                cursor.execute(statement)
+            except Error as e:
+                print(f"Error executing statement: {e}")
+    connection.commit()
+    print(f"SQL script '{script_path}' executed successfully")
+
 # 插入谣言数据到数据库
 def insert_rumor_data(connection, rumor, truth, published_date, origin, url):
     cursor = connection.cursor()
@@ -76,11 +91,16 @@ def process_csv_data(df, connection):
         # 处理category字段
         category_tag_id = insert_tag_data(connection, row['category'])
         insert_rumor_tag_data(connection, rumor_id, category_tag_id)
+        
+    print("Data loaded from csv file successfully")
 
 # 主函数
 def main():
     connection = create_connection()
     if connection:
+        # 执行SQL脚本文件
+        execute_sql_script(connection, "../web/backend/src/main/resources/static/antirumor.sql")
+        # 处理CSV文件中的数据
         process_csv_data(df, connection)
         connection.close()
 
