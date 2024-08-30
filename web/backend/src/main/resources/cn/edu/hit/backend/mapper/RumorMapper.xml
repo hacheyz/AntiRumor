@@ -26,7 +26,7 @@
 
         GROUP BY r.id
         <if test="searchTags != null and searchTags.size() > 0">
-            HAVING COUNT(DISTINCT t.name) = #{searchTagsLength}
+            HAVING COUNT(DISTINCT t.name) = #{searchTagListLength}
         </if>
 
     </select>

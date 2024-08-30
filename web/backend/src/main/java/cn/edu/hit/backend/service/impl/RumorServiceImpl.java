@@ -44,8 +44,14 @@ public class RumorServiceImpl implements RumorService {
 //    System.out.println(searchTags);
 //    System.out.println(searchTagList.size());
 
+    Integer searchTagListLength;
+    if(searchTagList == null || searchTagList.size() == 0)
+        searchTagListLength = 0;
+    else
+        searchTagListLength = searchTagList.size();
+
     //3.调用mapper
-    List<Rumor> rumors = rumorMapper.pagelist(searchRumor, searchTagList, searchTagList.size());
+    List<Rumor> rumors = rumorMapper.pagelist(searchRumor, searchTagList, searchTagListLength);
 
     for (Rumor rumor : rumors) {
       List<Tag> tagsForRumor = rumorMapper.getTagsForRumor(rumor.getId());

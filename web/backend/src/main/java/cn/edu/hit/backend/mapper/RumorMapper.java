@@ -15,7 +15,7 @@ public interface RumorMapper {
 //  @Select("select * from rumor")
   List<Rumor> pagelist(@Param("searchRumor") String searchRumor,
                        @Param("searchTags") List<String> searchTags,
-                       @Param("searchTagsLength") Integer searchTagsLength);
+                       @Param("searchTagListLength") Integer searchTagListLength);
 
   @Select("SELECT t.* FROM tag t " +
       "INNER JOIN rumor_tag rt ON t.id = rt.tag_id " +
