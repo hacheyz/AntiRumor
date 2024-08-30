@@ -44,6 +44,10 @@ const fetchCardsPageList = async () => {
       ...item,
       date: dayjs(item.published_date).format('YYYY/MM/DD')
     }))
+    // 将标签列表转换为字符串，用制表符分隔
+    itemsThisPage.value.forEach(item => {
+      item.tags = item.tags.join('\t')
+    })
   } catch (error) {
     ElMessage.error('Error fetching rumor list')
   }
@@ -111,7 +115,7 @@ onMounted(
           />
 
           <!-- 标签筛选 -->
-          <el-scrollbar style="max-height: 68vh;">
+          <el-scrollbar style="max-height: 65vh;">
             <el-checkbox-group v-model="selectedTags" class="tag-filter">
               <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
             </el-checkbox-group>
@@ -167,11 +171,12 @@ onMounted(
                   </el-row>
                   <el-row>
                     <el-col :span="12">
-                      <p>
-                        <el-icon>
+                      <!--此处展示标签 icon 和标签列表-->
+                      <p style="font-size: 14px">
+                        <el-icon class="near-text-icon">
                           <CollectionTag/>
                         </el-icon>
-                        <p> {{ item.tags }} </p>
+                        {{ item.tags }}
                       </p>
                     </el-col>
                     <el-col :span="12">
