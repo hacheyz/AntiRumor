@@ -111,9 +111,11 @@ onMounted(
           />
 
           <!-- 标签筛选 -->
-          <el-checkbox-group v-model="selectedTags" class="tag-filter">
-            <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
-          </el-checkbox-group>
+          <el-scrollbar style="max-height: 68vh;">
+            <el-checkbox-group v-model="selectedTags" class="tag-filter">
+              <el-checkbox v-for="tag in tags" :label="tag" :key="tag">{{ tag }}</el-checkbox>
+            </el-checkbox-group>
+          </el-scrollbar>
 
           <el-row gutter="30" style="margin: 20px; display: flex; justify-content: center">
             <el-col span="1" style="display: flex; justify-content: center;">
