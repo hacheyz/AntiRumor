@@ -17,5 +17,9 @@ public interface TagService {
   // 分页查询标签
   PageBean<Tag> pagelist(Map<String, Object> map);
 
+  // 获取标签列表(不带relateNum)
   List<Tag> list();
+
+  // 获取标签列表(带relateNum)
+  List<Tag> listWithRelateNum();
 }

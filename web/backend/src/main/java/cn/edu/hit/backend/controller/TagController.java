@@ -38,4 +38,10 @@ public class TagController {
   public Result<List<Tag>> list() {
     return Result.success(tagService.list());
   }
+
+  // 获取带有relateNum的标签列表
+  @PostMapping("listWithRelateNum")
+  public Result<List<Tag>> listWithRelateNum() {
+    return Result.success(tagService.listWithRelateNum());
+  }
 }

@@ -51,9 +51,20 @@ public class TagServiceImpl implements TagService {
     return pb;
   }
 
-  // 返回所有列表
+  // 返回标签列表（不带关联rumor条数）
   @Override
   public List<Tag> list() {
     return tagMapper.list();
+  }
+
+  // 返回标签列表（带关联rumor条数）
+  @Override
+  public List<Tag> listWithRelateNum() {
+    List<Tag> tagList = tagMapper.list();
+    for(Tag tag : tagList) {
+      Integer tagId = tag.getId();
+      tag.setRelateNum(tagMapper.getRelateNumByTagId(tagId));
+    }
+    return tagList;
   }
 }

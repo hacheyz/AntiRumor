@@ -18,4 +18,10 @@ public interface TagMapper {
 
   @Select("select * from tag")
   List<Tag> list();
+
+  @Select("select COUNT(rt.rumor_id) FROM tag t " +
+      "JOIN rumor_tag rt ON t.id = rt.tag_id " +
+      "WHERE t.id = #{tagId} " +
+      "GROUP BY t.id")
+  Integer getRelateNumByTagId(Integer tagId);
 }
