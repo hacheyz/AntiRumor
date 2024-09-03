@@ -82,6 +82,18 @@ export default {
           </ul>
         </section>
       </el-card>
+      <el-card class="box-card" shadow="hover">
+        <section class="section">
+          <h2 class="sub-header">辟谣网站连接</h2>
+          <ul>
+            <li>科普中国科学辟谣：<a href="https://piyao.kepuchina.cn/">https://piyao.kepuchina.cn/</a></li>
+            <li>中国互联网联合辟谣平台：<a href="https://www.piyao.org.cn/">https://www.piyao.org.cn/</a></li>
+            <li>食品辟谣网：<a href="http://www.xinhuanet.com/food/sppy/index.html">http://www.xinhuanet.com/food/sppy/index.html</a></li>
+            <li>杭州辟谣网：<a href="https://py.hangzhou.com.cn/index.htm">https://py.hangzhou.com.cn/index.htm</a></li>
+            <li>河南辟谣网：<a href="https://piyao.henanjubao.com/">https://piyao.henanjubao.com/</a></li>
+          </ul>
+        </section>
+      </el-card>
     </el-main>
   </el-container>
 </template>
