@@ -114,6 +114,11 @@ const handleAction = async (row, actionType) => {
 }
 
 const addQuestion = async () => {
+  if (!newQuestion.value) {
+    // alert('请输入问题！');
+    ElMessage.error("请输入问题！");
+    return;
+  }
   const res = await questionAddService({}, {
     question: newQuestion.value
   });
