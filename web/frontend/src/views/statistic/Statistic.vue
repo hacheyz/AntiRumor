@@ -1,0 +1,3 @@
+<template>
+  statistic
+</template>
