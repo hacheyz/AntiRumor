@@ -1,8 +1,7 @@
 <template>
   <el-header class="header-container">
     <el-menu
-        active-text-color="#ffd04b"
-        background-color="#014561"
+        active-text-color="#8888FF"
         text-color="#fff"
         class="top-menu"
         mode="horizontal"
@@ -14,3 +13,13 @@
     </el-menu>
   </el-header>
 </template>
+
+<style scoped>
+.top-menu {
+  padding: 0;
+  margin: 0;
+  background-image: url('/colorful_minimal_vector_abstract_art_background.jpg');
+  background-size: cover; /* 图片会被缩放到足以覆盖整个元素 */
+  background-position: bottom right;
+}
+</style>

@@ -29,12 +29,6 @@ import FooterVue from '@/components/Footer.vue'
   margin: 0;
 }
 
-.top-menu {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
 .main-container {
   display: flex;
   flex-direction: column;
