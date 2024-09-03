@@ -23,7 +23,7 @@ public class QuestionController {
   @PostMapping("/add")
   public Result add(String question) {
     questionService.add(question);
-    return Result.success();
+    return Result.success("问题添加成功");
   }
 
   @PostMapping("/pagelist")

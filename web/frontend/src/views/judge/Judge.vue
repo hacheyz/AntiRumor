@@ -9,6 +9,7 @@ import {
   questionAddDisagreeService
 } from "@/api/judge.js";
 import {CloseBold, Select} from "@element-plus/icons-vue";
+import { ElMessage } from 'element-plus';
 
 const currentContent = ref([{
   id: 1,
@@ -107,7 +108,8 @@ const handleAction = async (row, actionType) => {
     localStorage.setItem(key, 'true'); // 标记该问题已被点击
     await fetchQuestionPageList(); // 刷新列表
   } else {
-    alert('您已经对这个问题发表过意见了！'); // 提示用户已点击过
+    // alert('您已经对这个问题发表过意见了！'); // 提示用户已点击过
+    ElMessage.error("您已经对这个问题发表过意见了！");
   }
 }
 
@@ -115,8 +117,8 @@ const addQuestion = async () => {
   const res = await questionAddService({}, {
     question: newQuestion.value
   });
-
-  alert(res.data.message);
+  ElMessage.success(res.data.message);
+  // alert(res.data.message);
   newQuestion.value = '';
   await fetchQuestionPageList();
 }
