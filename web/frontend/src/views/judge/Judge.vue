@@ -42,6 +42,7 @@ const columns = ref([
     prop: 'id',
     align: 'center',
     sortable: true,
+    width: 80,
   },
   {
     label: '问题',
@@ -53,21 +54,25 @@ const columns = ref([
     prop: 'create_date',
     align: 'center',
     sortable: true,
+    width: 120,
   },
   {
     label: '赞成数',
     prop: 'num_agree_display',  // 使用计算后的字段
     align: 'center',
+    width: 120,
   },
   {
     label: '反对数',
     prop: 'num_disagree_display',  // 使用计算后的字段
     align: 'center',
+    width: 120,
   },
   {
     label: '你的观点',
     prop: 'action',
     align: 'center',
+    width: 120,
     slot: [
       {
         icon: Select,
